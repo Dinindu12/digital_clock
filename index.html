@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#080b18">
+    <meta name="description" content="Modern Glass Digital Clock">
+
+    <title>Digital Glass Clock</title>
+
+    <!-- Favicon - prevents favicon.ico 404 -->
+    <link
+        rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%92%3C/text%3E%3C/svg%3E"
+    >
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 24px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            font-family: "Inter", sans-serif;
+
+            background:
+                linear-gradient(
+                    125deg,
+                    #050812 0%,
+                    #101936 22%,
+                    #062035 45%,
+                    #21103d 70%,
+                    #050810 100%
+                );
+
+            background-size: 300% 300%;
+
+            animation:
+                backgroundShift 18s ease-in-out infinite;
+        }
+
+
+        /* =====================================================
+           ANIMATED BACKGROUND
+        ===================================================== */
+
+        @keyframes backgroundShift {
+
+            0% {
+                background-position: 0% 50%;
+            }
+
+            25% {
+                background-position: 50% 0%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            75% {
+                background-position: 50% 100%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+
+        }
+
+
+        /* =====================================================
+           BACKGROUND VIGNETTE
+        ===================================================== */
+
+        body::after {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            z-index: 1;
+
+            pointer-events: none;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    transparent 20%,
+                    rgba(0, 0, 0, 0.30) 100%
+                );
+        }
+
+
+        /* =====================================================
+           BACKGROUND GRID
+        ===================================================== */
+
+        .background-grid {
+            position: fixed;
+
+            inset: -50%;
+
+            z-index: 0;
+
+            pointer-events: none;
+
+            opacity: 0.16;
+
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 55px 55px;
+
+            transform:
+                perspective(700px)
+                rotateX(55deg)
+                translateY(20%);
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    transparent,
+                    black 25%,
+                    black 75%,
+                    transparent
+                );
+
+            -webkit-mask-image:
+                linear-gradient(
+                    to bottom,
+                    transparent,
+                    black 25%,
+                    black 75%,
+                    transparent
+                );
+        }
+
+
+        /* =====================================================
+           FLOATING ORBS
+        ===================================================== */
+
+        .orb {
+            position: fixed;
+
+            z-index: 0;
+
+            border-radius: 50%;
+
+            pointer-events: none;
+
+            filter: blur(90px);
+
+            mix-blend-mode: screen;
+
+            will-change: transform;
+        }
+
+
+        /* Purple */
+
+        .orb-1 {
+            width: 560px;
+            height: 560px;
+
+            top: -260px;
+            right: -160px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(132, 79, 255, 0.68),
+                    rgba(91, 43, 185, 0.22) 55%,
+                    transparent 72%
+                );
+
+            animation:
+                orbOne 15s ease-in-out infinite alternate;
+        }
+
+
+        /* Pink */
+
+        .orb-2 {
+            width: 520px;
+            height: 520px;
+
+            bottom: -270px;
+            left: -190px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255, 45, 150, 0.58),
+                    rgba(184, 33, 108, 0.18) 55%,
+                    transparent 72%
+                );
+
+            animation:
+                orbTwo 18s ease-in-out infinite alternate;
+        }
+
+
+        /* Cyan */
+
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+
+            top: 27%;
+            left: 37%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0, 210, 255, 0.43),
+                    rgba(0, 125, 165, 0.13) 50%,
+                    transparent 72%
+                );
+
+            animation:
+                orbThree 20s ease-in-out infinite alternate;
+        }
+
+
+        /* Small pink */
+
+        .orb-4 {
+            width: 260px;
+            height: 260px;
+
+            top: 56%;
+            right: 7%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255, 70, 180, 0.34),
+                    transparent 70%
+                );
+
+            filter: blur(75px);
+
+            animation:
+                orbFour 13s ease-in-out infinite alternate;
+        }
+
+
+        /* =====================================================
+           ORB ANIMATIONS
+        ===================================================== */
+
+        @keyframes orbOne {
+
+            0% {
+                transform:
+                    translate3d(0, 0, 0)
+                    scale(1);
+            }
+
+            100% {
+                transform:
+                    translate3d(-80px, 75px, 0)
+                    scale(1.15);
+            }
+        }
+
+
+        @keyframes orbTwo {
+
+            0% {
+                transform:
+                    translate3d(0, 0, 0)
+                    scale(1);
+            }
+
+            100% {
+                transform:
+                    translate3d(105px, -70px, 0)
+                    scale(1.18);
+            }
+        }
+
+
+        @keyframes orbThree {
+
+            0% {
+                transform:
+                    translate3d(-60px, 40px, 0)
+                    scale(0.9);
+            }
+
+            100% {
+                transform:
+                    translate3d(90px, -60px, 0)
+                    scale(1.15);
+            }
+        }
+
+
+        @keyframes orbFour {
+
+            0% {
+                transform:
+                    translate(0, 0);
+            }
+
+            100% {
+                transform:
+                    translate(-80px, -50px);
+            }
+        }
+
+
+        /* =====================================================
+           GLASS CARD
+        ===================================================== */
+
+        .glass-card {
+            position: relative;
+
+            z-index: 5;
+
+            width: min(900px, 100%);
+
+            padding:
+                58px
+                48px
+                43px;
+
+            text-align: center;
+
+            border-radius: 42px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.095),
+                    rgba(255, 255, 255, 0.025)
+                );
+
+            backdrop-filter:
+                blur(35px)
+                saturate(170%);
+
+            -webkit-backdrop-filter:
+                blur(35px)
+                saturate(170%);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.15);
+
+            box-shadow:
+
+                0 40px 100px
+                rgba(0, 0, 0, 0.58),
+
+                0 10px 35px
+                rgba(0, 0, 0, 0.28),
+
+                inset 0 1px 0
+                rgba(255, 255, 255, 0.20);
+
+            overflow: hidden;
+
+            animation:
+                cardEnter
+                0.9s
+                cubic-bezier(.2, .8, .2, 1);
+        }
+
+
+        /* =====================================================
+           CARD TOP SHINE
+        ===================================================== */
+
+        .glass-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 48%;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.075),
+                    transparent
+                );
+
+            opacity: 0.75;
+        }
+
+
+        /* =====================================================
+           CARD LIGHT
+        ===================================================== */
+
+        .glass-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 500px;
+            height: 220px;
+
+            top: -120px;
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            background:
+                radial-gradient(
+                    ellipse,
+                    rgba(255, 255, 255, 0.11),
+                    transparent 70%
+                );
+
+            filter: blur(30px);
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           CARD ENTRY
+        ===================================================== */
+
+        @keyframes cardEnter {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(25px)
+                    scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
+        .clock-title {
+            position: relative;
+
+            z-index: 10;
+
+            margin-bottom: 18px;
+
+            font-size:
+                clamp(
+                    0.65rem,
+                    1.5vw,
+                    0.9rem
+                );
+
+            font-weight: 600;
+
+            letter-spacing: 0.42em;
+
+            text-transform: uppercase;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.48
+                );
+        }
+
+
+        /* =====================================================
+           DIGITAL CLOCK
+           
+           PURE WHITE
+           LOW GLOW
+           NO BLUE
+        ===================================================== */
+
+        .time-display {
+            position: relative;
+
+            z-index: 10;
+
+            width: 100%;
+
+            font-family:
+                "Orbitron",
+                monospace;
+
+            font-size:
+                clamp(
+                    3.5rem,
+                    13vw,
+                    8rem
+                );
+
+            font-weight: 600;
+
+            line-height: 1;
+
+            letter-spacing: 0.045em;
+
+            white-space: nowrap;
+
+            color: #ffffff;
+
+            -webkit-text-fill-color: #ffffff;
+
+            font-variant-numeric:
+                tabular-nums;
+
+            font-feature-settings:
+                "tnum";
+
+            -webkit-font-smoothing:
+                antialiased;
+
+            text-rendering:
+                geometricPrecision;
+
+            /*
+                Only a tiny white glow.
+                No blue.
+                No purple.
+                No gradient.
+            */
+
+            text-shadow:
+                0 0 1px
+                rgba(255, 255, 255, 1),
+
+                0 0 4px
+                rgba(255, 255, 255, 0.18);
+
+            margin-bottom: 23px;
+
+            transform:
+                translateZ(0);
+        }
+
+
+        /* =====================================================
+           CLOCK PULSE
+        ===================================================== */
+
+        .digital-pulse {
+            animation:
+                clockPulse
+                0.16s
+                ease-out;
+        }
+
+
+        @keyframes clockPulse {
+
+            0% {
+                transform:
+                    scale(1.003);
+            }
+
+            100% {
+                transform:
+                    scale(1);
+            }
+
+        }
+
+
+        /* =====================================================
+           DATE
+        ===================================================== */
+
+        .date-display {
+            position: relative;
+
+            z-index: 10;
+
+            font-size:
+                clamp(
+                    1rem,
+                    2.8vw,
+                    1.7rem
+                );
+
+            font-weight: 400;
+
+            letter-spacing:
+                0.045em;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.88
+                );
+
+            margin-bottom:
+                29px;
+
+            text-shadow:
+                0 2px 12px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.35
+                );
+        }
+
+
+        /* =====================================================
+           DIVIDER
+        ===================================================== */
+
+        .divider {
+            position: relative;
+
+            z-index: 10;
+
+            width: 110px;
+
+            height: 1px;
+
+            margin:
+                0 auto 25px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        0.40
+                    ),
+                    transparent
+                );
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer-text {
+            position: relative;
+
+            z-index: 10;
+
+            font-size:
+                clamp(
+                    0.8rem,
+                    1.8vw,
+                    1rem
+                );
+
+            font-weight: 400;
+
+            line-height: 1.6;
+
+            letter-spacing:
+                0.035em;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.65
+                );
+        }
+
+
+        /* =====================================================
+           NAME
+        ===================================================== */
+
+        .highlight {
+            font-weight: 600;
+
+            color: #ffffff;
+
+            -webkit-text-fill-color:
+                #ffffff;
+        }
+
+
+        /* =====================================================
+           HEART
+        ===================================================== */
+
+        .heart {
+            display: inline-block;
+
+            color:
+                #ff4f78;
+
+            filter:
+                drop-shadow(
+                    0 0 5px
+                    rgba(
+                        255,
+                        79,
+                        120,
+                        0.30
+                    )
+                );
+
+            animation:
+                heartBeat
+                1.7s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform:
+                    scale(1);
+            }
+
+            15% {
+                transform:
+                    scale(1.18);
+            }
+
+            30% {
+                transform:
+                    scale(1);
+            }
+
+            45% {
+                transform:
+                    scale(1.10);
+            }
+
+            60% {
+                transform:
+                    scale(1);
+            }
+
+        }
+
+
+        /* =====================================================
+           CORNER DOTS
+        ===================================================== */
+
+        .corner-dot {
+            position: absolute;
+
+            width: 4px;
+            height: 4px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.35
+                );
+
+            box-shadow:
+                0 0 7px
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.18
+                );
+
+            z-index: 10;
+        }
+
+
+        .top-left {
+            top: 30px;
+            left: 34px;
+        }
+
+
+        .top-right {
+            top: 30px;
+            right: 34px;
+        }
+
+
+        .bottom-left {
+            bottom: 30px;
+            left: 34px;
+        }
+
+
+        .bottom-right {
+            bottom: 30px;
+            right: 34px;
+        }
+
+        /* =====================================================
+   MOUSE INTERACTION
+===================================================== */
+
+.glass-card {
+
+    transform-style: preserve-3d;
+
+    transition:
+        transform 0.18s ease-out,
+        box-shadow 0.25s ease;
+
+}
+
+
+/* =====================================================
+   MOUSE FOLLOW LIGHT
+===================================================== */
+
+.mouse-light {
+
+    position: fixed;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 2;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.055) 0%,
+            rgba(120, 170, 255, 0.025) 30%,
+            transparent 70%
+        );
+
+    filter: blur(8px);
+
+    mix-blend-mode: screen;
+
+    transition:
+        left 0.08s linear,
+        top 0.08s linear;
+
+}
+
+
+/* =====================================================
+   CARD HOVER
+===================================================== */
+
+.glass-card:hover {
+
+    box-shadow:
+
+        0 45px 110px
+        rgba(0, 0, 0, 0.62),
+
+        0 15px 45px
+        rgba(0, 0, 0, 0.30),
+
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.22);
+
+}
+
+
+/* =====================================================
+   MOBILE - DISABLE MOUSE EFFECT
+===================================================== */
+
+@media (hover: none), (pointer: coarse) {
+
+    .mouse-light {
+        display: none;
+    }
+
+    .glass-card {
+        transform:
+            none !important;
+    }
+
+}
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 16px;
+            }
+
+
+            .glass-card {
+                padding:
+                    42px
+                    24px
+                    32px;
+
+                border-radius: 34px;
+            }
+
+
+            .clock-title {
+                letter-spacing:
+                    0.28em;
+
+                margin-bottom:
+                    15px;
+            }
+
+
+            .time-display {
+                font-size:
+                    clamp(
+                        2.75rem,
+                        13.5vw,
+                        5.5rem
+                    );
+
+                letter-spacing:
+                    0.032em;
+
+                margin-bottom:
+                    18px;
+            }
+
+
+            .date-display {
+                font-size:
+                    clamp(
+                        0.88rem,
+                        3.6vw,
+                        1.3rem
+                    );
+
+                margin-bottom:
+                    24px;
+            }
+
+
+            .divider {
+                width: 85px;
+            }
+
+
+            .orb-1 {
+                width: 400px;
+                height: 400px;
+            }
+
+
+            .orb-2 {
+                width: 370px;
+                height: 370px;
+            }
+
+
+            .orb-3 {
+                width: 300px;
+                height: 300px;
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 430px) {
+
+            body {
+                padding: 12px;
+            }
+
+
+            .glass-card {
+                padding:
+                    32px
+                    14px
+                    25px;
+
+                border-radius: 28px;
+            }
+
+
+            .clock-title {
+                font-size:
+                    0.54rem;
+
+                letter-spacing:
+                    0.20em;
+            }
+
+
+            .time-display {
+                font-size:
+                    clamp(
+                        2.15rem,
+                        13.5vw,
+                        4rem
+                    );
+
+                letter-spacing:
+                    0.018em;
+            }
+
+
+            .date-display {
+                font-size:
+                    0.76rem;
+
+                letter-spacing:
+                    0.018em;
+            }
+
+
+            .footer-text {
+                font-size:
+                    0.70rem;
+            }
+
+
+            .corner-dot {
+                display: none;
+            }
+
+
+            .background-grid {
+                opacity: 0.08;
+            }
+
+        }
+
+
+        /* =====================================================
+           VERY SMALL DEVICES
+        ===================================================== */
+
+        @media (max-width: 350px) {
+
+            .glass-card {
+                padding:
+                    28px
+                    8px
+                    22px;
+            }
+
+
+            .time-display {
+                font-size:
+                    1.95rem;
+
+                letter-spacing:
+                    0.008em;
+            }
+
+
+            .date-display {
+                font-size:
+                    0.68rem;
+            }
+
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration:
+                    0.01ms !important;
+
+                animation-iteration-count:
+                    1 !important;
+
+                transition-duration:
+                    0.01ms !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         BACKGROUND
+    ===================================================== -->
+
+    <div class="background-grid"></div>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+
+
+    <!-- =====================================================
+         CLOCK CARD
+    ===================================================== -->
+
+    <main class="glass-card">
+
+
+        <!-- Corner lights -->
+
+        <span class="corner-dot top-left"></span>
+        <span class="corner-dot top-right"></span>
+
+        <span class="corner-dot bottom-left"></span>
+        <span class="corner-dot bottom-right"></span>
+
+
+        <!-- =================================================
+             TITLE
+        ================================================== -->
+
+        <div class="clock-title">
+            Digital Glass Clock
+        </div>
+
+
+        <!-- =================================================
+             TIME
+        ================================================== -->
+
+        <div
+            class="time-display"
+            id="timeDisplay"
+            aria-label="Current time"
+        >
+            00:00:00
+        </div>
+
+
+        <!-- =================================================
+             DATE
+        ================================================== -->
+
+        <div
+            class="date-display"
+            id="dateDisplay"
+        >
+            Loading...
+        </div>
+
+
+        <!-- =================================================
+             DIVIDER
+        ================================================== -->
+
+        <div class="divider"></div>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <div class="footer-text">
+
+            Built with
+
+            <span class="heart">❤️</span>
+
+            by
+
+            <span class="highlight">
+                Dinindu Jayampathi
+            </span>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ===================================================== -->
+
+    <script>
+
+        (() => {
+
+            "use strict";
+
+
+            /* =================================================
+               ELEMENTS
+            ================================================= */
+
+            const timeDisplay =
+                document.getElementById(
+                    "timeDisplay"
+                );
+
+
+            const dateDisplay =
+                document.getElementById(
+                    "dateDisplay"
+                );
+
+
+            /* =================================================
+               MONTHS
+            ================================================= */
+
+            const MONTHS = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+            ];
+
+
+            /* =================================================
+               WEEKDAYS
+            ================================================= */
+
+            const WEEKDAYS = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+            ];
+
+
+            /* =================================================
+               FORMAT TIME
+               
+               24 HOUR
+               HH:MM:SS
+            ================================================= */
+
+            function formatTime(date) {
+
+                const hours =
+                    String(
+                        date.getHours()
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                const minutes =
+                    String(
+                        date.getMinutes()
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                const seconds =
+                    String(
+                        date.getSeconds()
+                    ).padStart(
+                        2,
+                        "0"
+                    );
+
+
+                return `${hours}:${minutes}:${seconds}`;
+
+            }
+
+
+            /* =================================================
+               FORMAT DATE
+            ================================================= */
+
+            function formatDate(date) {
+
+                const weekday =
+                    WEEKDAYS[
+                        date.getDay()
+                    ];
+
+
+                const day =
+                    date.getDate();
+
+
+                const month =
+                    MONTHS[
+                        date.getMonth()
+                    ];
+
+
+                const year =
+                    date.getFullYear();
+
+
+                return `${weekday}, ${day} ${month} ${year}`;
+
+            }
+
+
+            /* =================================================
+               UPDATE CLOCK
+            ================================================= */
+
+            function updateClock() {
+
+                const now =
+                    new Date();
+
+
+                /* Update time */
+
+                timeDisplay.textContent =
+                    formatTime(now);
+
+
+                /* Update date */
+
+                dateDisplay.textContent =
+                    formatDate(now);
+
+
+                /*
+                    Restart tiny animation.
+                    This does NOT create a strong glow.
+                */
+
+                timeDisplay.classList.remove(
+                    "digital-pulse"
+                );
+
+
+                void timeDisplay.offsetWidth;
+
+
+                timeDisplay.classList.add(
+                    "digital-pulse"
+                );
+
+            }
+
+
+            /* =================================================
+               INITIAL UPDATE
+            ================================================= */
+
+            updateClock();
+
+
+            /* =================================================
+               UPDATE EVERY SECOND
+            ================================================= */
+
+            setInterval(
+                updateClock,
+                1000
+            );
+
+
+            /* =================================================
+               TAB VISIBILITY
+            ================================================= */
+
+            document.addEventListener(
+                "visibilitychange",
+                () => {
+
+                    if (!document.hidden) {
+                        updateClock();
+                    }
+
+                }
+            );
+
+
+            /* =================================================
+               READY
+            ================================================= */
+
+            console.log(
+                "🕒 Digital Glass Clock initialized."
+            );
+
+        })();
+
+    </script>
+
+    <script>
+    (() => {
+
+        "use strict";
+
+        const card = document.querySelector(".glass-card");
+
+        const orb1 = document.querySelector(".orb-1");
+        const orb2 = document.querySelector(".orb-2");
+        const orb3 = document.querySelector(".orb-3");
+        const orb4 = document.querySelector(".orb-4");
+
+        /* Mouse light */
+        const mouseLight = document.createElement("div");
+
+        mouseLight.className = "mouse-light";
+
+        document.body.appendChild(mouseLight);
+
+
+        /* =====================================================
+           MOUSE MOVE
+        ===================================================== */
+
+        document.addEventListener("mousemove", (event) => {
+
+            const x =
+                event.clientX / window.innerWidth;
+
+            const y =
+                event.clientY / window.innerHeight;
+
+
+            /*
+                Convert mouse position
+                into -1 to +1
+            */
+
+            const moveX =
+                (x - 0.5) * 2;
+
+            const moveY =
+                (y - 0.5) * 2;
+
+
+            /* =================================================
+               CARD 3D TILT
+            ================================================= */
+
+            const rotateY =
+                moveX * 4;
+
+            const rotateX =
+                moveY * -4;
+
+
+            card.style.transform =
+                `perspective(1200px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)
+                 translateZ(0)`;
+
+
+            /* =================================================
+               MOUSE LIGHT
+            ================================================= */
+
+            mouseLight.style.left =
+                `${event.clientX}px`;
+
+            mouseLight.style.top =
+                `${event.clientY}px`;
+
+
+            /* =================================================
+               ORB PARALLAX
+            ================================================= */
+
+            orb1.style.translate =
+                `${moveX * -25}px ${moveY * -20}px`;
+
+            orb2.style.translate =
+                `${moveX * 20}px ${moveY * 25}px`;
+
+            orb3.style.translate =
+                `${moveX * 35}px ${moveY * 30}px`;
+
+            orb4.style.translate =
+                `${moveX * -15}px ${moveY * 20}px`;
+
+        });
+
+
+        /* =====================================================
+           MOUSE LEAVE
+        ===================================================== */
+
+        document.addEventListener("mouseleave", () => {
+
+            card.style.transform =
+                "perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0)";
+
+            orb1.style.translate = "0 0";
+            orb2.style.translate = "0 0";
+            orb3.style.translate = "0 0";
+            orb4.style.translate = "0 0";
+
+        });
+
+
+    })();
+</script>
+
+
+</body>
+
+</html>
